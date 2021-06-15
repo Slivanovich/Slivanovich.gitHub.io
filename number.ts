@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Vector3 } from 'three';
 
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
 const clock = new THREE.Clock();
@@ -10,7 +11,7 @@ let camera: THREE.PerspectiveCamera, scene: THREE.Scene, renderer: THREE.WebGLRe
 
 let Dummy: THREE.Object3D;
 let room: THREE.LineSegments;
-let CameraPoints = new Array();
+let Objects = new Array(), CameraPoints = new Array();
 let raycaster = new THREE.Raycaster;
 
 let controller: THREE.Group;
@@ -111,6 +112,28 @@ function init() {
 
     scene.add(room);
 
+    let objLoader = new GLTFLoader();
+
+    for (let i = 0; i < 150; i++) {
+        objLoader.load('./bin/Number1.glb', function (object) {
+
+            object.scene.position.x = ((Math.random() * 2) - 1) * 3;
+            object.scene.position.y = ((Math.random() * 2) - 1) * 3 + 3;
+            object.scene.position.z = ((Math.random() * 2) - 1) * 3;
+            let sc = 0.02;
+
+            object.scene.scale.x = sc;
+            object.scene.scale.y = sc;
+            object.scene.scale.z = sc;
+
+            scene.add(object.scene);
+            Objects.push(object.scene);
+
+        }, undefined, function (error) {
+            alert(error);
+        });
+    }
+
     scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
     const light = new THREE.DirectionalLight(0xffffff);
@@ -191,6 +214,12 @@ function render() {
         cube.rotation.y += cube.userData.velocity.y * delta;
         cube.rotation.z += cube.userData.velocity.z * delta;
     }
+    for (let i = 0; i < Objects.length; i++) {
+        const obj = Objects[i];
+
+        obj.rotation.y += delta * 0.005;
+    }
+
     tempMatrix.identity().extractRotation(controller.matrixWorld);
     raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
     raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);

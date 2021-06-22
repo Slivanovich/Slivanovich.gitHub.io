@@ -26,7 +26,7 @@ function init() {
     document.body.appendChild(container);
 
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x505050);
+    // scene.background = new THREE.Color(0x505050);
 
     camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01, 100);
 
@@ -35,6 +35,19 @@ function init() {
     Dummy.position.y = 0;
     Dummy.position.z = 0;
     Dummy.add(camera);
+
+    const path = 'bin/textures/Cube/';
+    const format = '.png';
+    const urls = [
+        path + 'px' + format, path + 'nx' + format,
+        path + 'py' + format, path + 'ny' + format,
+        path + 'pz' + format, path + 'nz' + format
+    ];
+
+    const reflectionCube = new THREE.CubeTextureLoader().load(urls);
+    const refractionCube = new THREE.CubeTextureLoader().load(urls);
+    refractionCube.mapping = THREE.CubeRefractionMapping;
+    scene.background = reflectionCube;
 
     room = new THREE.LineSegments(
         new BoxLineGeometry(8, 8, 8, 10, 10, 10).translate(0, 3, 0),
@@ -186,7 +199,7 @@ function animate() {
 
 function render() {
 
-    scene.background = new THREE.Color(0x000090 * (Math.sin(clock.elapsedTime / 200000) + 1) / 2);
+    // scene.background = new THREE.Color(0x000090 * (Math.sin(clock.elapsedTime / 200000) + 1) / 2);
 
     const delta = clock.getDelta() * 600;
 

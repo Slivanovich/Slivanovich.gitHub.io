@@ -133,7 +133,7 @@ function init() {
             object.scene.position.x = ((Math.random() * 2) - 1) * 3;
             object.scene.position.y = ((Math.random() * 2) - 1) * 3 + 3;
             object.scene.position.z = ((Math.random() * 2) - 1) * 3;
-            let sc = 0.02;
+            let sc = 0.01;
 
             object.scene.scale.x = sc;
             object.scene.scale.y = sc;
